@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Other head elements -->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="admin-container">
+        <h2>Wel<!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Admin Panel</title>
+                <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+            </head>
+            <body>
+                <div class="conta<!DOCTYPE html>
+                    <html lang="en">
+                    <head>
+                        <meta charset="UTF-8">
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                        <title>Admin Panel</title>
+                    </head>
+                    <body>
+                        <h2>Welcome to the Admin Panel</h2>
+                    
+                        {% if is_logged_in() and User.query.get(session['user_id']).username == 'admin' %}
+                            <h3>Add or Block Dates</h3>
+                            <form method="POST" action="{{ url_for('admin') }}">
+                                <label for="action">Select Action:</label>
+                                <select name="action" id="action">
+                                    <option value="add_date">Add Date</option>
+                                    <option value="block_date">Block Date</option>
+                                </select>
+                                <br>
+                                <label for="date">Date (YYYY-MM-DD):</label>
+                                <input type="text" name="date" required>
+                                <button type="submit">Submit</button>
+                            </form>
+                    
+                            {% if blocked_dates %}
+                                <h3>Blocked Dates</h3>
+                                <ul>
+                                    {% for blocked_date in blocked_dates %}
+                                        <li>{{ blocked_date.date }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% else %}
+                                <p>No dates are currently blocked.</p>
+                            {% endif %}
+                    
+                            {% if booked_dates %}
+                                <h3>Booked Dates</h3>
+                                <ul>
+                                    {% for booked_date in booked_dates %}
+                                        <li>{{ booked_date.date_booked }} - {{ booked_date.time_slot }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% else %}
+                                <p>No dates are currently booked.</p>
+                            {% endif %}
+                        {% else %}
+                            <p>You do not have permission to access this page.</p>
+                        {% endif %}
+                    
+                        <p><a href="{{ url_for('home') }}">Go to Home</a></p>
+                    </body>
+                    </html>iner mt-5">
+                    <h2>Admin Panel</h2>
+                    {% with messages = get_flashed_messages() %}
+                        {% if messages %}
+                            <div class="alert alert-{{ messages[0].lower().split(' ', 1)[0] }}">
+                                {{ messages[0] }}
+                            </div>
+                        {% endif %}
+                    {% endwith %}
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">Time Slot</th>
+                                <th scope="col">Date Booked</th>
+                                <th scope="col">User ID</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for booking in booked_slots %}
+                                <tr>
+                                    <th scope="row">{{ booking.id }}</th>
+                                    <td>{{ booking.time_slot }}</td>
+                                    <td>{{ booking.date_booked }}</td>
+                                    <td>{{ booking.user_id }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </body>
+            </html>
+            come, {{ username }}!</h2>
+        <h3>Booking History</h3>
+        <ul>
+            {% for booking in bookings %}
+                <li>{{ booking.time_slot }} - {{ booking.date_booked.strftime('%Y-%m-%d %H:%M:%S') }}</li>
+            {% endfor %}
+        </ul>
+        <a class="logout-link" href="{{ url_for('admin_logout') }}">Logout</a>
+    </div>
+</body>
+</html>
