@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Booking</title>
+</head>
+<body>
+    <h2>Book a Massage Session</h2>
+    <form method="post" action="{{ url_for('booking') }}">
+        <label for="time_slot">Select a Time Slot:</label>
+        <select name="time_slot" id="time_slot" required>
+            {% for time_slot in time_slots %}
+                <option value="{{ time_slot }}">{{ time_slot }}</option>
+            {% endfor %}
+        </select>
+        <br>
+        <input type="submit" value="Book Now">
+    </form>
+</body>
+</html>
