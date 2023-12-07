@@ -1,23 +1,113 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap CSS link -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <!-- Other head elements -->
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
-    <title>Booking</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css" integrity="your-correct-integrity-value" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="your-correct-integrity-value" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="your-correct-integrity-value" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js" integrity="your-correct-integrity-value" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    
+
 </head>
 <body>
-    <h2>Book a Massage Session</h2>
-    <form method="post" action="{{ url_for('booking') }}">
-        <label for="time_slot">Select a Time Slot:</label>
-        <select name="time_slot" id="time_slot" required>
-            {% for time_slot in time_slots %}
-                <option value="{{ time_slot }}">{{ time_slot }}</option>
-            {% endfor %}
-        </select>
-        <br>
-        <input type="submit" value="Book Now">
-    </form>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="card-title">Book a Massage Session</h2>
+                        <form method="post" action="{{ url_for('booking') }}">
+                            <div class="form-group">
+                                <label for="time_slot">Select a Time Slot:</label>
+                                <select class="form-control" name="time_slot" id="time_slot" required>
+                                    {% for time_slot in time_slots %}
+                                        <option value="{{ time_slot }}">{{ time_slot }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <input type="submit" class="btn btn-primary" value="Book Now">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <div id="calendar"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and Popper.js scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha384-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+    <script>
+        $(document).ready(function() {
+            var availableSlots = {{ available_slots | tojson | safe }};
+            var bookedSlots = {{ booked_slots | tojson | safe }};
+
+
+            $('#calendar').fullCalendar({
+                defaultView: 'agendaWeek',
+                allDaySlot: false,
+                minTime: '08:00:00',
+                maxTime: '18:00:00',
+                slotDuration: '00:30:00',
+                slotLabelFormat: 'h:mm A',
+                header: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'agendaWeek,agendaDay'
+                },
+                events: [
+                    // Available slots
+                    ...availableSlots.map(function(slot) {
+                        return {
+                            title: 'Available',
+                            start: '2023-01-01T' + slot,
+                            end: '2023-01-01T' + moment(slot, 'HH:mm').add(30, 'minutes').format('HH:mm'),
+                            allDay: false,
+                            color: '#28a745' // Green color for available slots
+                        };
+                    }),
+                    // Booked slots
+                    ...bookedSlots.map(function(slot) {
+                        return {
+                            title: 'Booked',
+                            start: '2023-01-01T' + slot,
+                            end: '2023-01-01T' + moment(slot, 'HH:mm').add(30, 'minutes').format('HH:mm'),
+                            allDay: false,
+                            color: '#dc3545' // Red color for booked slots
+                        };
+                    })
+                ],
+                dayRender: function (date, cell) {
+                    // Render booked slots on the side
+                    var dateStr = date.format('YYYY-MM-DD');
+                    var bookedSlotsForDate = bookedSlots.filter(slot => slot.startsWith(dateStr));
+
+                    if (bookedSlotsForDate.length > 0) {
+                        var slotsHtml = '<ul>';
+                        bookedSlotsForDate.forEach(function (slot) {
+                            slotsHtml += '<li>' + moment(slot, 'HH:mm').format('h:mm A') + '</li>';
+                        });
+                        slotsHtml += '</ul>';
+                        $(cell).append(slotsHtml);
+                    }
+                }
+            });
+        });
+    </script>
 </body>
-</html>

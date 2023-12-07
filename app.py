@@ -29,8 +29,12 @@ def is_logged_in():
 def home():
     return render_template('index.html')
 
+available_time_slots = ["10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM"]
+
 @app.route('/booking', methods=['POST', 'GET'])
 def booking():
+    booked_slots = get_booked_slots()
+
     if request.method == 'POST':
         selected_time_slot = request.form['time_slot']
         new_booking = Booking(time_slot=selected_time_slot)
@@ -38,8 +42,14 @@ def booking():
         db.session.commit()
         return render_template('confirmation.html', time_slot=selected_time_slot)
     else:
-        return render_template('booking.html', time_slots=available_time_slots)
+        available_slots = ["10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM"]
+        return render_template('booking.html', time_slots=available_slots, booked_slots=booked_slots, available_slots=available_slots)
 
+    
+def get_booked_slots():
+    booked_slots = [booking.time_slot for booking in Booking.query.all()]
+    return booked_slots    
+    
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
     if request.method == 'POST':
@@ -63,7 +73,7 @@ def admin_dashboard():
         return render_template('admin_dashboard.html', username=session['username'], bookings=bookings)
     else:
         return redirect(url_for('admin'))
-
+    
 @app.route('/admin/logout')
 def admin_logout():
     session.pop('username', None)
