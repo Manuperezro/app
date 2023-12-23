@@ -1,146 +1,27 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'base.html' %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Booking</title>
-    <!-- Add your stylesheets and other head elements here -->
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css"
-        integrity="sha512-rG6+Yx6IqDka1Q5Q+pTq6qr41ixXU5HSFqb8ZBm9g4F4b5XAfYfI68b2Z5Z5tpL42IJgqY6ulC26Z7L/QDdqaw=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <!-- Bootstrap CSS link -->
-    <link rel="stylesheet"
-        href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
-        crossorigin="anonymous">
-    <!-- Add your stylesheets and other head elements here -->
-</head>
+{% block content %}
+    <h1>Booking</h1>
+    <form method="post">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required><br>
 
-<body>
-    <div class="container mt-5">
-        {% with messages = get_flashed_messages() %}
-            {% if messages %}
-                <div class="alert alert-dismissible fade show" role="alert">
-                    {% for message in messages %}
-                        <p class="mb-0">{{ message }}</p>
-                    {% endfor %}
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-            {% endif %}
-        {% endwith %}
-        <div class="row">
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-body">
-                        <h2 class="card-title">Book a Massage Session</h2>
-                        <form method="post" action="{{ url_for('booking') }}">
-                            <div class="form-group">
-                                <label for="time_slot">Select a Time Slot:</label>
-                                <select class="form-control" name="time_slot" id="time_slot" required>
-                                    {% for time_slot in available_slots %}
-                                        <option value="{{ time_slot }}">{{ time_slot }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <input type="submit" class="btn btn-primary" value="Book Now">
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-body">
-                        <div id="calendar"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required><br>
 
-    <!-- Bootstrap JS and Popper.js scripts -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-        crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-        crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-        crossorigin="anonymous"></script>
+        <label for="phone">Phone:</label>
+        <input type="tel" id="phone" name="phone" required><br>
 
-    <!-- jQuery and FullCalendar scripts -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
-        integrity="sha384-GLhlTQ8iN17pL3rZf+Rvo31CF+3u80I+5nZ8E0sAgB+GnKtvA9VdS9I6UqyJL6h6"
-        crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"
-        integrity="sha384-Dhh1hzp8p8FcMz0BnzSqrVBPTwU0I2SNhbf2DPGZKqcO2rQ4YFbRLRyAo5pxn5b0"
-        crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"
-        integrity="sha384-r/tMCAqFQOagWHoGB3Xr4BqMGV7S4lZe/P9Z+8FsmeX1YhI+Wr2pJotRL1P7vzdn"
-        crossorigin="anonymous"></script>
+        <label for="date">Date:</label>
+        <input type="datetime-local" id="date" name="date" required><br>
 
-    <script>
-        $(document).ready(function () {
-            var availableSlots = {{ available_slots | tojson | safe }};
-            var bookedSlots = {{ booked_slots | tojson | safe }};
+        <button type="submit">Book Now</button>
+    </form>
 
-            $('#calendar').fullCalendar({
-                defaultView: 'agendaWeek',
-                allDaySlot: false,
-                minTime: '08:00:00',
-                maxTime: '18:00:00',
-                slotDuration: '00:30:00',
-                slotLabelFormat: 'h:mm A',
-                header: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'agendaWeek,agendaDay'
-                },
-                events: [
-                    // Available slots
-                    ...availableSlots.map(function (slot) {
-                        return {
-                            title: 'Available',
-                            start: '2023-01-01T' + slot,
-                            end: '2023-01-01T' + moment(slot, 'HH:mm').add(30, 'minutes').format('HH:mm'),
-                            allDay: false,
-                            color: '#28a745' // Green color for available slots
-                        };
-                    }),
-                    // Booked slots
-                    ...bookedSlots.map(function (slot) {
-                        return {
-                            title: 'Booked',
-                            start: '2023-01-01T' + slot,
-                            end: '2023-01-01T' + moment(slot, 'HH:mm').add(30, 'minutes').format('HH:mm'),
-                            allDay: false,
-                            color: '#dc3545' // Red color for booked slots
-                        };
-                    })
-                ],
-                dayRender: function (date, cell) {
-                    // Render booked slots on the side
-                    var dateStr = date.format('YYYY-MM-DD');
-                    var bookedSlotsForDate = bookedSlots.filter(slot => slot.startsWith(dateStr));
-
-                    if (bookedSlotsForDate.length > 0) {
-                        var slotsHtml = '<ul>';
-                        bookedSlotsForDate.forEach(function (slot) {
-                            slotsHtml += '<li>' + moment(slot, 'HH:mm').format('h:mm A') + '</li>';
-                        });
-                        slotsHtml += '</ul>';
-                        $(cell).append(slotsHtml);
-                    }
-                }
-            });
-        });
-    </script>
-</body>
-
-</html>
+    <h2>Bookings</h2>
+    <ul>
+        {% for booking in bookings %}
+            <li>{{ booking.name }} - {{ booking.date }}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

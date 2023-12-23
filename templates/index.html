@@ -1,20 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css" integrity="sha512-rG6+Yx6IqDka1Q5Q+pTq6qr41ixXU5HSFqb8ZBm9g4F4b5XAfYfI68b2Z5Z5tpL42IJgqY6ulC26Z7L/QDdqaw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-/6pcc2lhz1pjc8z+5+Kwl27Z1B9eR+ntVmZm2ji11x3+9x6jZzuYL0G5VJz+3UfCp9uNpWbCn7fKzwJHdb/nYg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha512-MF+VApP8lspT4lrT7hh6Em4uGdM2r+Po0OuycDFfHef4wP9L3bV6iJQpnbl2ETzXEF+NDyUZlTTrkD2ugmQd3A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js" integrity="sha512-KBcTEZfEiaynL0W+3D4iXZORFjg5F3/6oPWkqgznt7MTuXlBUO/z94SZIenP9tWFEEExfNasxOL9L3yy5lxlKw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <title>Masseur Services</title>
-</head>
-<body>
-    <h1>Welcome to Masseur Services</h1>
-    <p>Book your session now!</p>
-    <a href="{{ url_for('booking') }}">Book Now</a>
-    <a href="{{ url_for('register') }}">Register</a>
-    <a href="{{ url_for('login') }}">Login</a>
-</body>
-</html>
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Welcome to the Masseur Website</h1>
+    <p>Explore our services and book your massage today!</p>
+{% endblock %}
